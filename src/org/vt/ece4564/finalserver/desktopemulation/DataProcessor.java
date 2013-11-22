@@ -1,6 +1,5 @@
 package org.vt.ece4564.finalserver.desktopemulation;
 
-
 import java.util.ArrayList;
 import javax.swing.JTable;
 import edu.vt.ece4564.finalproject.databridge.SensorData;
@@ -14,8 +13,6 @@ public class DataProcessor
     private int MAX_DATA_POINTS = 200;
     
     private JTable CtrlDebugTable;
-    
-    //private double avg_acl_x = 0, avg_acl_y = 0, avg_acl_z = 0;
     
     private int count = 0;
     
@@ -117,10 +114,6 @@ public class DataProcessor
    
     
     private void updateDebugTable(SensorData sd){
-        //avg_acl_x = (avg_acl_x + sd.getAcl_x())/2.0;
-        //avg_acl_y = (avg_acl_y + sd.getAcl_y())/2.0;
-        //avg_acl_z = (avg_acl_z + sd.getAcl_z())/2.0;
-        
         // row col
         CtrlDebugTable.setValueAt(sd.getAcl_x(), 0, 1);
         CtrlDebugTable.setValueAt(sd.getAcl_y(), 0, 2);
