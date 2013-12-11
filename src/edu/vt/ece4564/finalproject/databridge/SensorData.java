@@ -17,10 +17,20 @@ public class SensorData implements java.io.Serializable
     private double mag_z;
     
     private long ms_time;
+    
+    private String authentication;
+
+    public String getAuthentication(){
+        return authentication;
+    }
+
+    public void setAuthentication(String authentication){
+        this.authentication = authentication;
+    }
 
     public SensorData(double acl_x, double acl_y, double acl_z,
             double gyro_x, double gyro_y, double gyro_z,
-            double mag_x, double mag_y, double mag_z, long ms_time) {
+            double mag_x, double mag_y, double mag_z, long ms_time, String auth) {
         this.acl_x = acl_x;
         this.acl_y = acl_y;
         this.acl_z = acl_z;
@@ -31,6 +41,7 @@ public class SensorData implements java.io.Serializable
         this.mag_y = mag_y;
         this.mag_z = mag_z;
         this.ms_time = ms_time;
+        this.authentication = auth;
     }
     
 

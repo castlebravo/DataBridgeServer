@@ -1,6 +1,5 @@
 package org.vt.ece4564.finalserver.desktopemulation;
 
-import org.vt.ece4564.finalserver.*;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -8,16 +7,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
-
+// receives click requests from the mobile app
 public class DataUpdateServlet extends HttpServlet
 {   
-    private DataProcessor data_processor;
+    private DesktopControl desktop_control;
     
     
-    public DataUpdateServlet(DataProcessor data_processor){
-        this.data_processor = data_processor;
+    public DataUpdateServlet(DesktopControl dc){
+        this.desktop_control = dc;
     }
-    
     
     @Override
     protected void doGet(HttpServletRequest req, 
@@ -25,20 +23,15 @@ public class DataUpdateServlet extends HttpServlet
         // if the HTTP GET contained a query
         if(req.getQueryString() != null){
             
-            // if it is the Google Chart data query
-            if(req.getQueryString().contains("tq=chart"))
-                resp.getWriter().write(data_processor.getFormattedData());  
-
+            // if it is the mobile app requesting a left click
+            if(req.getQueryString().contains("req_click_left")){
+                desktop_control.doLeftClick();
+            }
             
-            // if it is the mobile app requesting the UDP port
-            else if(req.getQueryString().contains("req_udp_port"))
-                resp.getWriter().write(Integer.toString(UDPListener.port_));
-
-            
-            // if it is the mobile app requesting the sensor data to be cleared
-            else if(req.getQueryString().contains("req_data_clr"))
-                data_processor.clearData();
-            
+            // if it is the mobile app requesting a right click
+            else if(req.getQueryString().contains("req_click_right")){
+                desktop_control.doRightClick();
+            }
         }
     }  
 }

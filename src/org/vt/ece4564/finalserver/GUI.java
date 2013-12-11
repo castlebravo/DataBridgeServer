@@ -1,26 +1,7 @@
 package org.vt.ece4564.finalserver;
 
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
-import org.vt.ece4564.finalserver.chat.Chat;
-import org.vt.ece4564.finalserver.cli.CLI;
-import org.vt.ece4564.finalserver.desktopemulation.ApiServlet;
-import org.vt.ece4564.finalserver.desktopemulation.DataProcessor;
-import org.vt.ece4564.finalserver.desktopemulation.DataUpdateServlet;
-import org.vt.ece4564.finalserver.desktopemulation.UDPListener;
-import org.vt.ece4564.finalserver.desktopemulation.Desktop;
-import org.vt.ece4564.finalserver.desktopemulation.FileBrowser;
-
-
 public class GUI extends javax.swing.JFrame
 {
-    private DataProcessor data_processor;
-    private static Server server_;
-    public static ServerLog log_;
-    
-    public static int port_tcp = 8085;
-    public static int port_udp = 2000;
     public static int WIDTH_ = 600;
     public static int HEIGHT_ = 700;
     
@@ -31,40 +12,11 @@ public class GUI extends javax.swing.JFrame
         this.setSize(WIDTH_, HEIGHT_);
         this.setResizable(false);
         
-        // initialize the log object
-        log_ = new ServerLog(message_log_);
-        
-        data_processor = new DataProcessor(CtrlDebugTable);
+        // configure and start the server
+        new ServerInitializer(HomeTextArea, message_log_, CtrlDebugTable);
         
         // set the text area not editable
         message_log_.setEditable(false);
-        
-        new UDPListener(port_udp, data_processor).openUDPPort();
-        
-        // start the server
-        server_ = new Server(port_tcp);
-        ServletContextHandler context = 
-                new ServletContextHandler(ServletContextHandler.SESSIONS);
-        
-        context.setContextPath("/");
-        server_.setHandler(context);
- 
-        context.addServlet(new ServletHolder(new PrimaryServlet()),"/*");
-        
-        context.addServlet(new ServletHolder(new ApiServlet()),"/api");
-        context.addServlet(new ServletHolder(new DataUpdateServlet(data_processor)),
-                "/dataupdateterminal");
-        
-        context.addServlet(new ServletHolder(new Desktop()), "/desktop");
-        context.addServlet(new ServletHolder(new CLI()), "/cli");
-        context.addServlet(new ServletHolder(new FileBrowser()), "/filebrowser");
-        context.addServlet(new ServletHolder(new Chat()), "/chat");
-        
-        try{
-            server_.start();
-        }catch(Exception e){
-            System.err.println(e.toString());
-        }
     }
 
     /**
@@ -78,70 +30,52 @@ public class GUI extends javax.swing.JFrame
 
         primary_jpanel_ = new javax.swing.JPanel();
         CtrlDebugPane = new javax.swing.JTabbedPane();
-        jPanel1 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        message_log_ = new javax.swing.JTextArea();
-        user_input_ = new javax.swing.JTextField();
-        send_btn_ = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        HomeTextArea = new javax.swing.JTextArea();
         CtrlDebugPanel = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         CtrlDebugTable = new javax.swing.JTable();
+        jPanel1 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        message_log_ = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        primary_jpanel_.setPreferredSize(new java.awt.Dimension(500, 700));
+        primary_jpanel_.setPreferredSize(new java.awt.Dimension(600, 700));
 
         CtrlDebugPane.setMaximumSize(new java.awt.Dimension(600, 700));
         CtrlDebugPane.setMinimumSize(new java.awt.Dimension(600, 700));
-        CtrlDebugPane.setPreferredSize(new java.awt.Dimension(600, 700));
+        CtrlDebugPane.setPreferredSize(new java.awt.Dimension(550, 650));
 
-        jPanel1.setPreferredSize(new java.awt.Dimension(592, 13));
+        jPanel2.setPreferredSize(new java.awt.Dimension(584, 600));
 
-        message_log_.setColumns(20);
-        message_log_.setRows(5);
-        message_log_.setFocusable(false);
-        jScrollPane1.setViewportView(message_log_);
+        HomeTextArea.setEditable(false);
+        HomeTextArea.setColumns(20);
+        HomeTextArea.setLineWrap(true);
+        HomeTextArea.setRows(5);
+        HomeTextArea.setWrapStyleWord(true);
+        HomeTextArea.setMaximumSize(new java.awt.Dimension(500, 600));
+        jScrollPane3.setViewportView(HomeTextArea);
 
-        user_input_.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                user_input_ActionPerformed(evt);
-            }
-        });
-
-        send_btn_.setText("Send");
-        send_btn_.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                send_btn_ActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 568, Short.MAX_VALUE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(user_input_)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(send_btn_)))
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 554, Short.MAX_VALUE)
                 .addContainerGap())
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 497, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(user_input_, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(send_btn_))
-                .addGap(13, 13, 13))
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 613, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
-        CtrlDebugPane.addTab("Log", jPanel1);
+        CtrlDebugPane.addTab("Home", jPanel2);
 
         CtrlDebugTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -187,7 +121,7 @@ public class GUI extends javax.swing.JFrame
             CtrlDebugPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(CtrlDebugPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 568, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 554, Short.MAX_VALUE)
                 .addContainerGap())
         );
         CtrlDebugPanelLayout.setVerticalGroup(
@@ -195,43 +129,67 @@ public class GUI extends javax.swing.JFrame
             .addGroup(CtrlDebugPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(344, Short.MAX_VALUE))
+                .addContainerGap(418, Short.MAX_VALUE))
         );
 
         CtrlDebugPane.addTab("CtrlDebug", CtrlDebugPanel);
+
+        jPanel1.setPreferredSize(new java.awt.Dimension(592, 13));
+
+        message_log_.setColumns(20);
+        message_log_.setRows(5);
+        message_log_.setFocusable(false);
+        jScrollPane1.setViewportView(message_log_);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 554, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 613, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        CtrlDebugPane.addTab("Log", jPanel1);
 
         javax.swing.GroupLayout primary_jpanel_Layout = new javax.swing.GroupLayout(primary_jpanel_);
         primary_jpanel_.setLayout(primary_jpanel_Layout);
         primary_jpanel_Layout.setHorizontalGroup(
             primary_jpanel_Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(CtrlDebugPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(primary_jpanel_Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(CtrlDebugPane, javax.swing.GroupLayout.PREFERRED_SIZE, 586, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(26, Short.MAX_VALUE))
         );
         primary_jpanel_Layout.setVerticalGroup(
             primary_jpanel_Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(CtrlDebugPane, javax.swing.GroupLayout.PREFERRED_SIZE, 600, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(primary_jpanel_Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(CtrlDebugPane, javax.swing.GroupLayout.PREFERRED_SIZE, 674, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(primary_jpanel_, javax.swing.GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE)
+            .addComponent(primary_jpanel_, javax.swing.GroupLayout.DEFAULT_SIZE, 624, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(primary_jpanel_, javax.swing.GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE)
+            .addComponent(primary_jpanel_, javax.swing.GroupLayout.DEFAULT_SIZE, 698, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void send_btn_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_send_btn_ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_send_btn_ActionPerformed
-
-    private void user_input_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_user_input_ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_user_input_ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -263,6 +221,7 @@ public class GUI extends javax.swing.JFrame
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable(){
             public void run(){
+                //System.out.println("running");
                 new GUI().setVisible(true);
             }
         });
@@ -271,13 +230,14 @@ public class GUI extends javax.swing.JFrame
     private javax.swing.JTabbedPane CtrlDebugPane;
     private javax.swing.JPanel CtrlDebugPanel;
     private javax.swing.JTable CtrlDebugTable;
+    private javax.swing.JTextArea HomeTextArea;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextArea message_log_;
     private javax.swing.JPanel primary_jpanel_;
-    private javax.swing.JButton send_btn_;
-    private javax.swing.JTextField user_input_;
     // End of variables declaration//GEN-END:variables
 
     //========================================================================//

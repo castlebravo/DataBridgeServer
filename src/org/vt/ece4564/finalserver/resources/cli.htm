@@ -1,0 +1,28 @@
+<html>
+<head>
+ <title>CLI</title>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+ <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+ <script>
+ google.load("visualization", "1", {packages:["corechart", "table"]}); 
+ $(document).ready(function(){
+  doGetCli();
+  setInterval(doGetCli, 10); });
+  function doGetCli(){ 
+   $.get("/chat", doGetCli); }
+ </script>
+</head>
+<body>
+<center>
+<table>
+ <tr>
+ <td width="490px">
+  <form method="GET" action="/cli">
+   <input type="submit" value="Start!"/>
+  </form>
+ </td>
+</tr>
+</table>
+</center>
+</body>
+</html>

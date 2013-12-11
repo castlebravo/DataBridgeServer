@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import javax.swing.JTextArea;
 
 
+// server log controller used for debugging and further development
 public class ServerLog
 {
     private ArrayList<String> messages_;
     private JTextArea gui_log_;
+    
     
     public ServerLog(JTextArea gui_log){
         messages_ = new ArrayList<String>();

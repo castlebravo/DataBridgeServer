@@ -7,11 +7,10 @@ import java.net.DatagramSocket;
 import edu.vt.ece4564.finalproject.databridge.SensorData;
 
 
-
+// runnable used to receive incoming UDP datagram packets
 public class UDPRunnable implements Runnable
 {
     private int port_;
-    private DesktopControl ctrl_;
     private DataProcessor data_processor;
     
     
@@ -37,14 +36,7 @@ public class UDPRunnable implements Runnable
             ois_.close();
             
             // processes the newly received sensor data
-            //ctrl_.processSensorData(received);
             data_processor.addSensorData(received);
-            
-            
-            // TODO handle / verify client information for received sensor data
-            //receivePacket.getAddress()  ?
-            //receivePacket.getPort()     ?
-            
             
             // continually listens for incoming packets
             while(true){
@@ -56,12 +48,10 @@ public class UDPRunnable implements Runnable
                 received = (SensorData)ois_.readObject();
                 ois_.close();
             
-                //ctrl_.processSensorData(received);
                 data_processor.addSensorData(received);
             }  
         }catch(Exception e){
             System.err.println("ERROR in UDPRunnable: " + e.toString());
-            e.printStackTrace();
             System.exit(1);
         }
     }    
